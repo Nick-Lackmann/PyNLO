@@ -298,6 +298,10 @@ class Pulse:
     """    
     
     center_wavelength_nm    = property(_get_center_wavelength_nm)
+
+    #center_wavelength_nm2    = property(_get_center_wavelength_nm)
+    
+    #center_wavelength_nm3    = property(_get_center_wavelength_nm)
     """    
     Property: center wavelength
     

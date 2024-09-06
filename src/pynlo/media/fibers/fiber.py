@@ -278,13 +278,28 @@ class FiberInstance:
             # simply interpolate (using a spline) the betas from the refractive index
             # self.x is the wavelength in nm
             # self.y is the refractive index (unitless)
-            
-            supplied_W_THz = 2 * np.pi * 1e-12 * 3e8 / (self.x*1e-9)
-            supplied_betas = self.y * 2 * np.pi / (self.x * 1e-9)
+
+
+            ### Hardcoding pure Xenon lol   --> neglecting the dependence of the Fiber to the wavevector mismatch !!!!!!!!! ###################
+
+            #supplied_W_THz = 1e-12 * 3e8 / (self.x*1e-9)  # remove 2*np.pi as wrong lol
+            #supplied_betas = self.y * 2 * np.pi / (self.x * 1e-9)
             
             # InterpolatedUnivariateSpline wants increasing x, so flip arrays
-            interpolator = scipy.interpolate.InterpolatedUnivariateSpline(supplied_W_THz[::-1], supplied_betas[::-1]) 
-            B = interpolator(pulse.W_THz)
+            #interpolator = scipy.interpolate.InterpolatedUnivariateSpline(supplied_W_THz[::-1], supplied_betas[::-1]) 
+            
+            #B = interpolator(pulse.W_THz)
+            ###################################################################################################################################
+
+            nm=self.c/pulse.W_THz*2*np.pi
+            n=0.00322869/(46.301- (nm*1e-3)**-2)+0.00355393/(59.578- (nm*1e-3)**-2)+0.0606764/(112.74 -(nm*1e-3)**-2)+1
+            #n=0*nm
+
+            B = n* 2 * np.pi / (nm  * 1e-9)
+            print("Yass that n")
+
+
+
 
             
             
@@ -293,6 +308,7 @@ class FiberInstance:
         # same group velocity, so we need to set the value and slope of beta at the pulse wavelength to zero:
         if self.fiberspecs["dispersion_format"] == "GVD" or self.fiberspecs["dispersion_format"] == "n":
             center_index = np.argmin(np.abs(pulse.V_THz))
+            print(center_index)
             slope = np.gradient(B)/np.gradient(pulse.W_THz)
             B = B - slope[center_index] * (pulse.V_THz) - B[center_index]
             
@@ -364,7 +380,7 @@ class FiberInstance:
         
         self.length = length
         self.fiberspecs= {}
-        self.fiberspecs['dispersion_format'] = 'GVD'
+        self.fiberspecs['dispersion_format'] = 'n'
         self.fibertype = label
         if gain == 0:
             self.fiberspecs["is_gain"] = False

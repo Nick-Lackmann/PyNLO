@@ -75,6 +75,7 @@ class SSFM:
         This funciton loads the fiber parameters into class variables.
         """
         self.betas[:]  =  fiber.get_betas(pulse_in, z=z)
+        self.betas2[:]=self.betas[:]
         # self.alpha[:]  = -fiber.get_gain(pulse_in, output_power) # currently alpha cannot change with z
         self.gamma     =  fiber.get_gamma(z=z)
         
@@ -172,7 +173,8 @@ class SSFM:
         self.dR_A2  = np.ndarray((self.n,), dtype='complex128')      
         self.omegas = np.ndarray((self.n,), dtype='complex128')              
         self.alpha  = np.ndarray((self.n,), dtype='complex128')      
-        self.betas  = np.ndarray((self.n,), dtype='complex128')      
+        self.betas  = np.ndarray((self.n,), dtype='complex128')
+        self.betas2  = np.ndarray((self.n,), dtype='complex128')         
         self.LinearStep_output    = np.ndarray((self.n,), dtype='complex128')              
         self.A      = np.ndarray((self.n,), dtype='complex128')              
         self.R      = np.ndarray((self.n,), dtype='complex128')              
@@ -524,7 +526,7 @@ class SSFM:
         
 
         for i in range(n_steps):                        
-            print ("Step:", i, "Distance remaining:", fiber.length * (1 - np.float(i)/n_steps) )
+            print ("Step:", i, "Distance remaining:", fiber.length * (1 - float(i)/n_steps) )
             
             if reload_fiber_each_step:
                 self.load_fiber_parameters(pulse_in, fiber, output_power, z=i*delta_z) 

@@ -89,7 +89,15 @@ class GaussianPulse(Pulse):
             self.set_AT(self.AT * np.sqrt( power / ( frep_MHz*1.0e6 * self.calc_epp()) ))
         self.chirp_pulse_W(GDD, TOD)
         self.chirp_pulse_T(chirp2, chirp3, T0_ps)
-    
+
+
+
+
+
+
+
+
+
 class SincPulse(Pulse):
     def __init__(self, power, FWHM_ps, center_wavelength_nm,
                  time_window_ps = 10., frep_MHz = 100., NPTS = 2**10, 
@@ -184,9 +192,15 @@ class NoisePulse(Pulse):
         
         self.set_AW( 1e-30 * np.ones(self.NPTS) * np.exp(1j * 2 * np.pi *
                  1j * np.random.rand(self.NPTS)))
-                 
+
+
+
+
+
+
+
 class CWPulse(Pulse):
-    def __init__(self, avg_power, center_wavelength_nm, time_window_ps = 10.0,
+    def __init__(self, avg_power, center_wavelength_nm,time_window_ps = 10.0,
                  NPTS = 2**8,offset_from_center_THz = None):
         Pulse.__init__(self, n = NPTS)
         # make sure we weren't passed mks units
@@ -200,8 +214,45 @@ class CWPulse(Pulse):
             # Set the time domain to be CW, which should give us a delta function in
             # frequency. Then normalize that delta function (in frequency space) to
             # the average power. Note that frep does not factor in here.
-            self.set_AT(np.ones(self.NPTS,))
-            self.set_AW(self.AW * np.sqrt(avg_power) / sum(abs(self.AW)) )
+
+            #center_wavelength_nm2,sigma2,center_wavelength_nm3,sigma3
+
+            dF = 1.0/time_window_ps
+
+            #The init of the pulse class needs to be modified to add multiple wavelengths input (albeit only the definition should be required to be added)
+            # Hardcoding the wavelengths now to run some debugging as the coarse grid rn requires discreet gridpoints to be choosen
+
+            center_wavelength_nm2=250
+            sigma2= 0.001 #THz
+
+            center_wavelength_nm3=799
+            sigma3= 0.001 #THz
+
+
+            center_THz = self._c_nmps/center_wavelength_nm
+
+
+            center_THz2 = self._c_nmps/center_wavelength_nm2
+            offset2=int((center_THz-center_THz2)/dF)
+
+            center_THz3 = self._c_nmps/center_wavelength_nm3
+            offset3=int((center_THz-center_THz3)/dF)
+
+            aws = np.zeros((self.NPTS, ))
+
+            for ii in range(10):
+                aws[int(self.NPTS/2.0)-offset2+ii]=np.sqrt(avg_power) * np.exp(-(ii*dF)**2/(2*sigma2**2))
+                aws[int(self.NPTS/2.0)-offset2-ii]=np.sqrt(avg_power) * np.exp(-(ii*dF)**2/(2*sigma2**2))
+
+                aws[int(self.NPTS/2.0)-offset3+ii]=np.sqrt(avg_power) * np.exp(-(ii*dF)**2/(2*sigma3**2))
+                aws[int(self.NPTS/2.0)-offset3-ii]=np.sqrt(avg_power) * np.exp(-(ii*dF)**2/(2*sigma3**2))
+            
+
+            self.set_AW(aws)
+
+
+
+
         else:
             dF = 1.0/time_window_ps
             n_offset = np.round( offset_from_center_THz/dF)      
@@ -213,9 +264,23 @@ class CWPulse(Pulse):
         
             self.set_center_wavelength_nm(center_nm)
             aws = np.zeros((self.NPTS, ))
-            aws[int(self.NPTS/2.0) + int(n_offset)  ] = 1.0 *np.sqrt(avg_power)
+            aws[int(self.NPTS/2.0)+int(n_offset)] = 1.0 *np.sqrt(avg_power)
+            aws[int(self.NPTS/2.0)+int(n_offset) + 1] = 0.5 *np.sqrt(avg_power)
+            aws[int(self.NPTS/2.0)+int(n_offset) - 1] = 0.5 *np.sqrt(avg_power)
+
+
+            aws[int(self.NPTS/2.0) - int(9*n_offset)  ] = 1*np.sqrt(avg_power)
+            aws[int(self.NPTS/2.0) - int(9*n_offset)  + 1] = 0.5*np.sqrt(avg_power)
+            aws[int(self.NPTS/2.0) - int(9*n_offset)  - 1] = 0.5*np.sqrt(avg_power)
+
             self.set_AW(aws)
-        
+
+
+
+
+
+
+
     def gen_OSA(self, time_window_ps, center_wavelength_nm, power, 
                  power_is_epp = False,
                  fileloc = 'O:\\OFM\\Maser\\Dual-Comb 100 MHz System\\Pump spectrum-Yb-101614.csv',
