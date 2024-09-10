@@ -294,14 +294,9 @@ class FiberInstance:
             nm=self.c/pulse.W_THz*2*np.pi
             n=0.00322869/(46.301- (nm*1e-3)**-2)+0.00355393/(59.578- (nm*1e-3)**-2)+0.0606764/(112.74 -(nm*1e-3)**-2)+1
             #n=0*nm
-
             B = n* 2 * np.pi / (nm  * 1e-9)
+
             print("Yass that n")
-
-
-
-
-            
             
         # in the case of "GVD" or "n" it's possible (likely) that the betas will not be zero and have zero
         # slope at the pulse central frequency. For the NLSE, we need to move into a frame propagating at the
@@ -311,13 +306,21 @@ class FiberInstance:
             print(center_index)
             slope = np.gradient(B)/np.gradient(pulse.W_THz)
             B = B - slope[center_index] * (pulse.V_THz) - B[center_index]
-            
             # print B
             return B
             
         else:
             return -1
             
+    def get_phase_mismatch(nm, number_density, n):
+        u = 2.405
+        a = 1e-6
+
+        # 
+        gas = 2 * np.pi * number_density * ((n-1)/number_density)/nm
+        fiber = (u * nm)/(4*np.pi*(a**2))
+
+        return gas - fiber
             
     def get_gain(self,pulse,output_power = 1):
         """ Retrieve gain spectrum for fiber. If fiber has 'simple gain', this
