@@ -22,4 +22,4 @@
 #-----------------------------------------------------------------------
 
 
-from pynlo.interactions.ThreeWaveMixing.DFG_integrand import dfg_problem
+from .DFG_integrand import dfg_problem

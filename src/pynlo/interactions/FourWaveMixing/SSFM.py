@@ -25,8 +25,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from numpy.fft import fftshift, ifftshift
-from pynlo.interactions.FourWaveMixing import global_variables
-from pynlo.light.PulseBase import Pulse
+from . import global_variables
+from ...light.PulseBase import Pulse
 import gc
 import scipy.fftpack
 

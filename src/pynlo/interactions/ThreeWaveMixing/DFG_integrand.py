@@ -20,9 +20,9 @@ import numpy as np
 import scipy.fftpack as fftpack
 from copy import deepcopy
 from scipy import constants
-from pynlo.light import OneDBeam, OneDBeam_highV_WG
-from pynlo.light.DerivedPulses import NoisePulse
-from pynlo.light.PulseBase import Pulse
+from ...light import OneDBeam, OneDBeam_highV_WG
+from ...light.DerivedPulses import NoisePulse
+from ...light.PulseBase import Pulse
 from matplotlib import pyplot as plt
 import logging
 

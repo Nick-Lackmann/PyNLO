@@ -24,7 +24,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from pynlo.media.crystals.CrystalContainer import Crystal
+from .CrystalContainer import Crystal
 
 
 class AgGaSe2(Crystal):

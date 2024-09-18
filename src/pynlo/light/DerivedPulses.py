@@ -23,8 +23,8 @@ from __future__ import print_function
 
 import numpy as np
 from scipy.interpolate import interp1d
-from pynlo.util import IFFT_t
-from pynlo.light.PulseBase import Pulse
+from ..util import IFFT_t
+from .PulseBase import Pulse
 
 class SechPulse(Pulse):
     def __init__(self, power, T0_ps, center_wavelength_nm,

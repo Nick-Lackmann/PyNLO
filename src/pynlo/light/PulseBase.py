@@ -21,7 +21,7 @@ from __future__ import print_function
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy import constants, signal 
-from pynlo.util import FFT_t, IFFT_t
+from ..util import FFT_t, IFFT_t
 import warnings
 import scipy.ndimage.interpolation
 

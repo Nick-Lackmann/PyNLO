@@ -23,12 +23,12 @@ from __future__ import print_function
 
 import numpy as np
 import scipy.interpolate
-from pynlo.media.fibers.calculators import DTabulationToBetas
+from .calculators import DTabulationToBetas
 from scipy.special import factorial
 from scipy import constants
 from scipy.optimize import minimize
-from pynlo.util.pynlo_ffts import IFFT_t
-from pynlo.media.fibers import JSONFiberLoader
+from ...util.pynlo_ffts import IFFT_t
+from . import JSONFiberLoader
 
 
 #fiber:
@@ -296,7 +296,7 @@ class FiberInstance:
             #n=0*nm
             B = n* 2 * np.pi / (nm  * 1e-9)
 
-            print("Yass that n")
+            print("Yass that nnn")
             
         # in the case of "GVD" or "n" it's possible (likely) that the betas will not be zero and have zero
         # slope at the pulse central frequency. For the NLSE, we need to move into a frame propagating at the
